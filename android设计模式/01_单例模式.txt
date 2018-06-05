@@ -1,0 +1,43 @@
+优点:由于单例模式在内存中只有一个实例，减少了内存开支，特别是一个对象需要频繁地创建、销毁时，
+     而且创建或销毁时性能又无法优化，单例模式的优势就非常明显。
+ListView的getView方法中。
+
+@Override
+public View getView(int position, View convertView, ViewGroup parent)   
+    View itemView = null;
+    if (convertView == null) {
+        itemView = LayoutInflater.from(mContext).inflate(mLayoutId, null);
+        // 其他代码
+    } else {
+        itemView = convertView;
+    }
+    // 获取Holder
+    // 初始化每项的数据
+    return itemView;
+}
+
+
+
+/**
+ * Double Check Lock (DCL)实现单例
+ * 优点：既能在需要时才初始化单例，又能保证线程安全，
+ * 且单例对象初始化后调用getInstance不进行同步锁
+ */
+
+public class Singleton {
+    private static Singleton mInstance = null;
+
+    public Singleton() {
+    }
+
+    public static Singleton getInstance() {
+        if (mInstance == null) {
+            synchronized (Singleton.class) {
+                if (mInstance == null) {
+                    mInstance = new Singleton();
+                }
+            }
+        }
+        return mInstance;
+    }
+}

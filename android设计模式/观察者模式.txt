@@ -1,0 +1,37 @@
+/**
+ * 观察者
+ */
+
+public class Coder implements Observer {
+    private String name;
+
+    public Coder(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        Log.e("msg", name + ":" + o);
+    }
+}
+
+/**
+ * 这个app信息是被观察者，当它有新消息时所有观察者(coder)会受到更新
+ */
+
+public class AppMessage extends Observable {
+    public void postNewPublication(String content) {
+        //标识状态或内容发生改变
+        setChanged();
+        //通知所有观察者
+        notifyObservers(content);
+    }
+}
+
+
+    Coder coder1=new Coder("张三");
+    Coder coder2=new Coder("李四");
+    AppMessage appMessage=new AppMessage();
+    appMessage.addObserver(coder1);
+    appMessage.addObserver(coder2);
+    appMessage.postNewPublication("王五发来一条消息");

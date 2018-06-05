@@ -1,0 +1,106 @@
+Internal storage:
+总是可用的
+这里的文件默认只能被我们的app所访问。
+当用户卸载app的时候，系统会把internal内该app相关的文件都清除干净。
+Internal是我们在想确保不被用户与其他app所访问的最佳存储区域。
+
+External storage:
+并不总是可用的，因为用户有时会通过USB存储模式挂载外部存储器，当取下挂载的这部分后，就无法对其进行访问了。
+是大家都可以访问的，因此保存在这里的文件可能被其他程序访问。
+当用户卸载我们的app时，系统仅仅会删除external根目录（getExternalFilesDir()）下的相关文件。
+External是在不需要严格的访问权限并且希望这些文件能够被其他app所共享或者是允许用户通过电脑访问时的最佳存储区域。
+
+Note: 当用户卸载我们的app时，android系统会删除以下文件：
+所有保存到internal storage的文件。
+所有使用getExternalFilesDir()方式保存在external storage的文件。
+
+获取External存储的权限
+<manifest ...>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+</manifest>
+
+
+
+一、保存到Internal Storage
+
+当保存文件到internal storage时，可以通过执行下面两个方法之一来获取合适的目录作为 FILE 的对象：
+getFilesDir() : 返回一个File，代表了我们app的internal目录。
+getCacheDir() : 返回一个File，代表了我们app的internal缓存目录。请确保这个目录下的文件能够在一旦不再需要的时候马上被删除，并对其大小进行合理限制，例如1MB 。系统的内部存储空间不够时，会自行选择删除缓存文件。
+可以使用File() 构造器在那些目录下创建一个新的文件，如下：
+File file = new File(context.getFilesDir(), filename);
+同样，也可以执行openFileOutput() 获取一个 FileOutputStream 用于写文件到internal目录。如下：
+String filename = "myfile";
+String string = "Hello world!";
+FileOutputStream outputStream;
+try {
+  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+  outputStream.write(string.getBytes());
+  outputStream.close();
+} catch (Exception e) {
+  e.printStackTrace();
+}
+如果需要缓存一些文件，可以使用createTempFile()。例如：下面的方法从URL中抽取了一个文件名，然后再在程序的internal缓存目录下创建了一个以这个文件名命名的文件。
+ public File getTempFile(Context context, String url) {
+    File file;
+    try {
+        String fileName = Uri.parse(url).getLastPathSegment();
+        file = File.createTempFile(fileName, null, context.getCacheDir());
+    catch (IOException e) {
+        // Error while creating file
+    }
+    return file;
+}
+
+
+二、保存文件到External Storage
+
+我们可以通过执行 getExternalStorageState()来查询external storage的状态。若返回状态为MEDIA_MOUNTED, 则可以读写。示例如下：
+ /* Checks if external storage is available for read and write */
+public boolean isExternalStorageWritable() {
+    String state = Environment.getExternalStorageState();
+    if (Environment.MEDIA_MOUNTED.equals(state)) {
+        return true;
+    }
+    return false;
+}
+/* Checks if external storage is available to at least read */
+public boolean isExternalStorageReadable() {
+    String state = Environment.getExternalStorageState();
+    if (Environment.MEDIA_MOUNTED.equals(state) ||
+        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+        return true;
+    }
+    return false;
+}
+
+external storage对于用户与其他app是可修改的，我们可能会保存下面两种类型的文件。
+Public files :这些文件对与用户与其他app来说是public的，当用户卸载我们的app时，这些文件应该保留。例如，那些被我们的app拍摄的图片或者下载的文件。
+Private files: 这些文件完全被我们的app所私有，它们应该在app被卸载时删除。尽管由于存储在external storage，那些文件从技术上而言可以被用户与其他app所访问，但实际上那些文件对于其他app没有任何意义。因此，当用户卸载我们的app时，系统会删除其下的private目录。例如，那些被我们的app下载的缓存文件
+
+将文件以public形式保存在external storage中，请使用getExternalStoragePublicDirectory()方法来获取一个 File 对象，该对象表示存储在external storage的目录。这个方法会需要带有一个特定的参数来指定这些public的文件类型，以便于与其他public文件进行分类。参数类型包括DIRECTORY_MUSIC 或者 DIRECTORY_PICTURES. 如下:
+public File getAlbumStorageDir(String albumName) {
+    // Get the directory for the user's public pictures directory.
+    File file = new File(Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES), albumName);
+    if (!file.mkdirs()) {
+        Log.e(LOG_TAG, "Directory not created");
+    }
+    return file;
+}
+
+想要将文件以private形式保存在external storage中，可以通过执行getExternalFilesDir() 来获取相应的目录，并且传递一个指示文件类型的参数。每一个以这种方式创建的目录都会被添加到external storage封装我们app目录下的参数文件夹下（如下则是albumName）。这下面的文件会在用户卸载我们的app时被系统删除。如下示例：
+public File getAlbumStorageDir(Context context, String albumName) {
+    // Get the directory for the app's private pictures directory.
+    File file = new File(context.getExternalFilesDir(
+            Environment.DIRECTORY_PICTURES), albumName);
+    if (!file.mkdirs()) {
+        Log.e(LOG_TAG, "Directory not created");
+    }
+    return file;
+}
+
+
+
+
+

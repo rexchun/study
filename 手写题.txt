@@ -1,0 +1,183 @@
+1.activity的启动模式
+	stander :每新建一个activity就会把activity放入栈中
+	singTop：当新建一个activiy是如果这个activity在栈顶就重复使用，如果不在就创建新的
+	singTask:如果栈中有这个activity不需要重复创建，然后把该activity上面的都退出该栈
+	singInstance:每个栈中只有一个acitivity
+2:service的两种启动方式
+	startService  onCreate  onStartCommand   onDestroy
+	bindService   onCreate  onBind  onUnBind   onDestory
+3.broadcast注册方式和区别
+	第一种
+	//new出上边定义好的BroadcastReceiver
+MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
+
+//实例化过滤器并设置要过滤的广播  
+
+		IntentFilter intentFilter = new IntentFilter		("android.provider.Telephony.SMS_RECEIVED");
+
+//注册广播   
+	
+	myContext.registerReceiver(smsBroadCastReceiver,intentFilter, 
+             			"android.permission.RECEIVE_SMS", null);
+	第二种
+	<receiver android:name=".MyBroadCastReceiver">  
+            
+	<!-- android:priority属性是设置此接收者的优先级（从-1000到1000） -->
+          
+  	<intent-filter android:priority="20">
+            	<actionandroid:name="android.provider.Telephony.SMS_RECEIVED"/>  
+            
+	</intent-filter>  
+</receiver>
+
+
+	区别
+	第一种动态广播随生命周期的销毁而销毁
+	第二种是常驻型，当应该关闭后同样能接受到广播
+4.http和https的区别
+	两者都是超文本传输协议，而https是基于套接字层的传输协议，http请求网络时数据容易泄漏，
+	https使用密钥和签字的证书响应连接，
+	http作用在应用层，https作用在传输层
+	http端口是80, https端口是4443
+5.httpclient 和httpUrlConnection的区别
+	defaultHttpClient和AndroidhttpClient是httpclient的具体实现类
+	httppost=new httppost
+	httppost.setpost
+	HttpResponse=httpClient.excute(httppost)
+	
+	httpurlconnection.set信息
+	httpurlconnection.getinputStream
+
+	httpClient稳定,bug少，但是api数量多，不容易扩展,2.3前使用
+	httpurlconnection  api简单，压缩和缓存机制减少了网络访问的流量。2.3后使用
+6.mvp框架
+	通过p层实现m和v的交互，p层将参数传到m层，获取到的数据以接口的方式从p层传到v层
+7.java虚拟机、dalvik和art虚拟机的区别
+	1,java虚拟机是基于栈的读取数据，而dalvik是通过寄存器读取，速度快，java虚拟机便宜的			是.class文件，dalivik是.dex文件
+	2,dalvik每次启动应用是都有编译成机器码，而art环境下只在第一次安装时字节码预编译成
+	机器码，这样以后启动就快了
+
+8.Webview和js交互
+	loadurl
+	setjavaSciptenable
+	setScrollBarStyle
+	setWebChromClient();获取标题，进度等
+	addjavascriptInterface();与js传输数据
+9.布局优化
+	<include>重复使用布局
+	<merge>去掉重复标签
+	减少布局的层数
+
+10.String，Stringbuffer，Stringbuilder 区别
+	string每次修改时会重新创建一个对象
+	stringbuffer,stringbuilder是对一个对象重复操作，但stringbuffer是线程安全的
+11.recyclerview使用
+	mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mAdapter = new HomeAdapter());
+	class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder>
+	
+	设置adapter
+     	class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder>
+    	{
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
+                    HomeActivity.this).inflate(R.layout.item_home, parent,
+                    false));
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position)
+        {
+            holder.tv.setText(mDatas.get(position));
+        }
+
+        @Override
+        public int getItemCount()
+        {
+            return mDatas.size();
+        }
+
+        class MyViewHolder extends ViewHolder
+        {
+
+            TextView tv;
+
+            public MyViewHolder(View view)
+            {
+                super(view);
+                tv = (TextView) view.findViewById(R.id.id_num);
+            }
+        }
+    }
+12.recycerview加header和多布局
+	//根据position返回不同的type
+	public int getItemViewType(int position) {
+
+	}
+
+	//根据不同的viewtype创建不同的布局
+ 	@Override
+    	public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        	return view
+    	}
+13.解决ScrollView嵌套ListView和GridView冲突的方法
+
+	重写ListView的onMeasure方法，来自定义高度：
+
+	@Override
+    	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        	int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, 			MeasureSpec.AT_MOST);
+        	super.onMeasure(widthMeasureSpec, expandSpec);
+    	}
+
+14.Message、Handler、MessageQueen、Looper的之间的关系
+	使用handlder发送message时，将获取到looper，message会放到messagequeen中，looper不停的	从	messagequeen中获取message对象，并将message发送给handler，回调handlermessage
+15.Android应用程序启动过程
+	1，launch通过bindler进程通讯，通知AcvitytyManagerService去开启一个acitivity
+	2，ActivityManagerService通过bindler进程通信再去告诉laucher进入parused状态
+	3，laucher收到消息后，ActivityManegerService再去创建一个新的进程，在进程中创建			activitythread实例
+	4，activitytread通过binder进程通讯将一个binder类型的数据传给
+	activitymanagerservice信息数据交互
+	5，activitymanagerservice通过bindler通知activitytread启动一个activity
+
+16.activity的启动过程
+	1.调用startActivty实际上最后还是调用了startActivityForResult 方法
+	2.启动activity方法的还是Instrumentation类。Instrumentation#execStartActivity
+	3.真正执行activity的启动过程的是ActivityManagerNative.getDefault().startActivity
+	执行启动activity之后，有一个代码检查方法：checkStartActivityResult
+	4.ActivityNanagerService继承自ActivityManagerNative,ActivityManagerNative,继承自
+	binder并实现了IActivityManager接口，所有又回到了ActivityManagerService的startActivity方法
+	5.经过多个调用activity的启动回到了ApplicationThread的scheduleLauchActivity方法
+	6.然后用handler.sendMessage发送消息启动acitivty,然后在performLaunchActivity方法中启动activity
+
+17.ListView优化
+	1.convertView重用，利用好 convertView 来重用 View，切忌每次 getView() 都新建。ListView 的核心	原理就是重用 View，如果重用 view 不改变宽高，重用View可以减少重新分配缓存造成的内存频繁分配/	回收;
+
+	2.ViewHolder优化，使用ViewHolder的原因是findViewById方法耗时较大，如果控件个数过多，会严重影		响性能，而使用ViewHolder主要是为了可以省去这个时间。通过setTag，getTag直接获取View。
+	3.
+减少Item View的布局层级，这是所有layout都必须遵循的，布局层级过深会直接导致View的测量与绘制	浪费大量的时间。
+
+	4.adapter中的getView方法尽量少使用逻辑
+图片加载采用三级缓存，避免每次都要重新加载。
+
+	5.尝试开启硬件加速来使ListView的滑动更加流畅。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

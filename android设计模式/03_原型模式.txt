@@ -1,0 +1,22 @@
+使用场景
+	1.初始化需要消耗非常多资源，通过拷贝避免这些销毁
+	2.一个对象需要提供给其他对象访问，而且各个调用者可能都需要修改其值，考虑拷贝多个对象
+		拱调用者使用，即保护性拷贝
+	 
+	public class ArrayList<E> extends AbsTractList<E> implements Cloneable{
+		int size;//元素数量，也就是这个列表的大小；
+		transient object[] array;
+		
+		//返回一个副本对象
+		@override public object clone(){
+		try{
+			ArrayList<?> result =(ArrayList<?>) super.clone();
+			result.array=array.clone;
+			return result;
+		}catch{
+			throw new assertionError();
+		}
+			
+		}	
+	}
+	深拷贝：将类中的定义的变量也进行拷贝

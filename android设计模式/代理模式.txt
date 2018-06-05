@@ -1,0 +1,40 @@
+/**
+ * 抽象主题类
+ */
+
+public abstract class Subject {
+    public abstract void visit();
+}
+
+/**
+ * 实现抽象主题的真是主题类
+ */
+
+public class RealSubject extends Subject {
+    @Override
+    public void visit() {
+        Log.e("tag", "Real Subject");
+    }
+}
+
+/**
+ * 代理类
+ */
+
+public class ProxySubject extends Subject {
+    RealSubject mRealSubject;
+
+    public ProxySubject(RealSubject realSubject) {
+        this.mRealSubject = realSubject;
+    }
+
+    @Override
+    public void visit() {
+        mRealSubject.visit();
+    }
+}
+
+--------------使用-----------------
+RealSubject rs=new RealSubject();
+ProxySubject ps=new ProxySubject(rs);
+ps.visit();

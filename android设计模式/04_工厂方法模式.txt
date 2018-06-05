@@ -1,0 +1,64 @@
+/**
+ * 每种数据的操作方式做为一个产品类
+ */
+
+public abstract class IOHandler {
+    public abstract void addData(String id, String name);
+
+    public abstract void delData(String id, String name);
+}
+
+/**
+ * 具体的IO处理类：File
+ */
+
+public class FileHandler extends IOHandler{
+    @Override
+    public void addData(String id, String name) {
+
+    }
+
+    @Override
+    public void delData(String id, String name) {
+
+    }
+}
+
+/**
+ * 具体的IO处理类：Xml
+ */
+
+public class XmlHandler extends IOHandler {
+    @Override
+    public void addData(String id, String name) {
+
+    }
+
+    @Override
+    public void delData(String id, String name) {
+
+    }
+}
+
+/**
+ * 获取IO处理者
+ */
+public class IOFactory {
+    public static <T extends IOHandler> T getIOHandler(Class<T> clz) {
+        IOHandler handler = null;
+        try {
+            handler = (IOHandler) Class.forName(clz.getName()).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return (T) handler;
+    }
+}
+//--------------------使用-------------------------
+IOHandler handler =IOFactory.getIOHandler(FileHandler.class);
+handler.addData();
+IOHandler handler =IOFactory.getIOHandler(XmlHandler.class);
+handler.addData();
+
+
+
