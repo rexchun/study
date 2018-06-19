@@ -150,9 +150,9 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 	2.启动activity方法的还是Instrumentation类。Instrumentation#execStartActivity
 	3.真正执行activity的启动过程的是ActivityManagerNative.getDefault().startActivity
 	执行启动activity之后，有一个代码检查方法：checkStartActivityResult
-	4.ActivityNanagerService继承自ActivityManagerNative,ActivityManagerNative,继承自
+	4.ActivityManagerService继承自ActivityManagerNative,ActivityManagerNative,继承自
 	binder并实现了IActivityManager接口，所有又回到了ActivityManagerService的startActivity方法
-	5.经过多个调用activity的启动回到了ApplicationThread的scheduleLauchActivity方法
+	5.经过多次调用activity的启动回到了ApplicationThread的scheduleLauchActivity方法
 	6.然后用handler.sendMessage发送消息启动acitivty,然后在performLaunchActivity方法中启动activity
 
 17.ListView优化
