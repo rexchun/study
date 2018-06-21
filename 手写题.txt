@@ -166,6 +166,17 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 图片加载采用三级缓存，避免每次都要重新加载。
 
 	5.尝试开启硬件加速来使ListView的滑动更加流畅。
+18.recyclerview局部刷新，精确到哪个item刷新
+	recyclerviewAdapter.notifyItemChange(position)
+	//具体到某个控件
+	1.在Adpter中使用onBindViewHoder(final RecyclerView.ViewHolder holder, final int position,List 					payloads)
+	2.通过payloads参数,给不同的控件用不同的数字标识，
+	3.mAdapter.notifyItemChange(position ,payload);
+19.activity与service通信的三种方式
+	1.当使用startService启动时，将数据放入Intent中，在service 的onStartCommand(Intent intent)中获取
+	2.使用binderService启动，实现参数中的ServiceConnection,在Service 的onBind()返回自定义的Binder,
+	  自定义的Binder编写获取service数据的方法，供activity中调用
+	3.在方法二的基础上在自定义的Binder中返回this.service;在Activity中就可以使用返回的这个对象调用方法了
 
 
 
