@@ -178,7 +178,9 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 	  自定义的Binder编写获取service数据的方法，供activity中调用
 	3.在方法二的基础上在自定义的Binder中返回this.service;在Activity中就可以使用返回的这个对象调用方法了
 
+20.http 的增删改查
 
+21.音视频的实现原理
 
 
 
