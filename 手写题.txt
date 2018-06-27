@@ -182,8 +182,37 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 
 21.音视频的实现原理
 
+22.Android中的内存泄漏和内存溢出有什么区别
 
+23.Android中的显示Intent和隐试Intent的区别
 
+24.Androi中序列化有那些，他们的区别
+
+25.用过哪些图片加载框架？看过源码吗？简述一下流程。
+
+26.如何获取程序的崩溃日志
+
+27.png和jpg的区别
+
+28.事件分发中的 onTouch 和 onTouchEvent 有什么区别，又该如何使用？
+	1.onTouch 优先于 onTouchEvent执行。如果在 onTouch 方法中通过返回 true 将事件消费掉，onTouchEvent 将不会再执行
+	2.onTouch 能够得到执行需要两个前提条件，第一 mOnTouchListener 的值不能为空，第二当前点击的控件必须是 enable 的
+29.Android5、6、7的新特性
+	Android5.0新特性：
+	MaterialDesign设计风格
+	支持多种设备
+	支持64位ART虚拟机
+
+	Android6.0新特性
+	大量漂亮流畅的动画
+	支持快速充电的切换
+	支持文件夹拖拽应用
+	相机新增专业模式
+
+	Android7.0新特性
+	分屏多任务
+	增强的Java8语言模式
+	夜间模式
 
 
 
