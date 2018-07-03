@@ -63,6 +63,7 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 	setScrollBarStyle
 	setWebChromClient();获取标题，进度等
 	addjavascriptInterface();与js传输数据
+	webview.evaluateJavascript（）android调用js方法
 9.布局优化
 	<include>重复使用布局
 	<merge>去掉重复标签
@@ -113,6 +114,7 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
             }
         }
     }
+
 12.recycerview加header和多布局
 	//根据position返回不同的type
 	public int getItemViewType(int position) {
@@ -125,6 +127,8 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 
         	return view
     	}
+13.RecyclerView添加分割线
+	mRecyclerView.addItemDecoration
 13.解决ScrollView嵌套ListView和GridView冲突的方法
 
 	重写ListView的onMeasure方法，来自定义高度：
@@ -183,17 +187,20 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 21.音视频的实现原理
 
 22.Android中的内存泄漏和内存溢出有什么区别
-
+	
 23.Android中的显示Intent和隐试Intent的区别
-
+	
 24.Androi中序列化有那些，他们的区别
-
+	Serializable:java中的序列化接口，使用起来开销大，序列化和反序列化需要大量I/O操作：
+	Parcelable:是Android中的序列化方式，占用资源少，效率高。
 25.用过哪些图片加载框架？看过源码吗？简述一下流程。
 
 26.如何获取程序的崩溃日志
 
 27.png和jpg的区别
-
+	1、png有透明通道,而jpg没有 
+	2、png是无损压缩的,而jpg是有损压缩,因此png中存储的信息会很多,体积自然就大了
+	3、同样一张背景图,png虽然体积大,但是加载速度更快
 28.事件分发中的 onTouch 和 onTouchEvent 有什么区别，又该如何使用？
 	1.onTouch 优先于 onTouchEvent执行。如果在 onTouch 方法中通过返回 true 将事件消费掉，onTouchEvent 将不会再执行
 	2.onTouch 能够得到执行需要两个前提条件，第一 mOnTouchListener 的值不能为空，第二当前点击的控件必须是 enable 的
@@ -213,6 +220,9 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 	分屏多任务
 	增强的Java8语言模式
 	夜间模式
+30.activity和fragment传递数据
+	1.fragment.setArguments(Bundle);
+	2.在onAttach(Activity activity)中获取activity然后调用方法
 
 
 
