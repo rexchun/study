@@ -135,16 +135,16 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 
 	@Override
     	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        	int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, 			MeasureSpec.AT_MOST);
+        	int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, 					MeasureSpec.AT_MOST);
         	super.onMeasure(widthMeasureSpec, expandSpec);
     	}
 
 14.Message、Handler、MessageQueen、Looper的之间的关系
-	使用handlder发送message时，将获取到looper，message会放到messagequeen中，looper不停的	从	messagequeen中获取message对象，并将message发送给handler，回调handlermessage
+	使用handlder发送message时，将获取到looper，message会放到messagequeen中，looper不停的	从	messagequeen中	获取message对象，并将message发送给handler，回调handlermessage
 15.Android应用程序启动过程
 	1，launch通过bindler进程通讯，通知AcvitytyManagerService去开启一个acitivity
 	2，ActivityManagerService通过bindler进程通信再去告诉laucher进入parused状态
-	3，laucher收到消息后，ActivityManegerService再去创建一个新的进程，在进程中创建			activitythread实例
+	3，laucher收到消息后，ActivityManegerService再去创建一个新的进程，在进程中创建activitythread实例
 	4，activitytread通过binder进程通讯将一个binder类型的数据传给
 	activitymanagerservice信息数据交互
 	5，activitymanagerservice通过bindler通知activitytread启动一个activity
@@ -196,6 +196,12 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
 25.用过哪些图片加载框架？看过源码吗？简述一下流程。
 
 26.如何获取程序的崩溃日志
+	1.自定义类实现UncaughtExceptionHandler接口
+	2.重写uncaughtException方法
+	3.在初始化时使用自定义的CrashCatchHandler替换掉系统默认的UncaughtException处理器
+	4.在uncaughtException方法中获得错误信息，并将它存储到sd卡中
+	5.自定义Application继承Application，在onCreate方法中初始化自定义的CrashCatchHandler
+	6.更改AndroidManifest中Application的name字段为自定义的Application
 
 27.png和jpg的区别
 	1、png有透明通道,而jpg没有 
