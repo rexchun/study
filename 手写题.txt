@@ -262,6 +262,74 @@ MyBroadCastReceiver yBroadCastReceiver = new 		MyBroadCastReceiver();
         }
     }
 
+31、讲解一下Context 
+	Context是一个抽象基类。在翻译为上下文，也可以理解为环境，是提供一些程序的运行环境基础信息。
+	Context下有两个子类，ContextWrapper是上下文功能的封装类，而ContextImpl则是上下文功能的实现类。
+	而ContextWrapper又有三个直接的子类， ContextThemeWrapper、Service和Application。
+	其中，ContextThemeWrapper是一个带主题的封装类，而它有一个直接子类就是Activity，
+	所以Activity和Service以及Application的Context是不一样的，只有Activity需要主题，Service不需要主题。
+	Context一共有三种类型，分别是Application、Activity和Service。这三个类虽然分别各种承担着不同的作用，但它们都属于Context的一种，
+	而它们具体Context的功能则是由ContextImpl类去实现的，因此在绝大多数场景下，Activity、Service和Application这三种类型的Context都是可以通用的。
+	不过有几种场景比较特殊，比如启动Activity，还有弹出Dialog。
+	出于安全原因的考虑，Android是不允许Activity或Dialog凭空出现的，一个Activity的启动必须要建立在另一个Activity的基础之上，也就是以此形成的返回栈。
+	而Dialog则必须在一个Activity上面弹出（除非是System Alert类型的Dialog），因此在这种场景下，我们只能使用Activity类型的Context，否则将会出错。
+ 
+	getApplicationContext()和getApplication()方法得到的对象都是同一个application对象，只是对象的类型不一样。
+	Context数量 = Activity数量 + Service数量 + 1 （1为Application）
+32、理解Activity，View,Window三者关系
+	这个问题真的很不好回答。所以这里先来个算是比较恰当的比喻来形容下它们的关系吧。
+	Activity像一个工匠（控制单元），Window像窗户（承载模型），View像窗花（显示视图）LayoutInflater像剪刀，Xml配置像窗花图纸。
+	Activity包含了一个PhoneWindow，而PhoneWindow就是继承于Window的，Activity通过setContentView将View设置到了PhoneWindow上，
+	而View通过WindowManager的addView()、removeView()、updateViewLayout()对View进行管理
+
+
+
+	1：Activity构造的时候会初始化一个Window，准确的说是PhoneWindow。
+	2：这个PhoneWindow有一个“ViewRoot”，这个“ViewRoot”是一个View或者说ViewGroup，是最初始的根视图。
+	3：“ViewRoot”通过addView方法来一个个的添加View。比如TextView，Button等
+	4：这些View的事件监听，是由WindowManagerService来接受消息，并且回调Activity函数。比如onClickListener，onKeyDown等。
+
+33、View的绘制流程
+	自定义控件：
+	1、组合控件。这种自定义控件不需要我们自己绘制，而是使用原生控件组合成的新控件。如标题栏。
+	2、继承原有的控件。这种自定义控件在原生控件提供的方法外，可以自己添加一些方法。如制作圆角，圆形图片。
+	3、完全自定义控件：这个View上所展现的内容全部都是我们自己绘制出来的。比如说制作水波纹进度条。
+ 
+	View的绘制流程：OnMeasure()——>OnLayout()——>OnDraw()
+ 
+	第一步：OnMeasure()：测量视图大小。从顶层父View到子View递归调用measure方法，measure方法又回调OnMeasure。
+	第二步：OnLayout()：确定View位置，进行页面布局。从顶层父View向子View的递归调用view.layout方法的过程，即父View根据上一步measure子View所得到的布局大小和布局参数，将子View放在合适的位置上。
+	第三步：OnDraw()：绘制视图。ViewRoot创建一个Canvas对象，然后调用OnDraw()。六个步骤：①、绘制视图的背景；②、保存画布的图层（Layer）；③、绘制View的内容；④、绘制View子视图，如果没有就不用；
+	⑤、还原图层（Layer）；⑥、绘制滚动条。
+34.Binde机制简单理解:
+	在Android系统的Binder机制中，是有Client,Service,ServiceManager,Binder驱动程序组成的，其中Client，service，Service Manager运行在用户空间，Binder驱动程序是运行在内核空间的。而Binder就是把这4种组件粘合在一块的粘合剂，其中核心的组件就是Binder驱动程序，Service Manager提供辅助管理的功能，而Client和Service正是在Binder驱动程序和Service Manager提供的基础设施上实现C/S 之间的通信。其中Binder驱动程序提供设备文件/dev/binder与用户控件进行交互，
+	Client、Service，Service Manager通过open和ioctl文件操作相应的方法与Binder驱动程序进行通信。而Client和Service之间的进程间通信是通过Binder驱动程序间接实现的。而Binder Manager是一个守护进程，用来管理Service，并向Client提供查询Service接口的能力。
+35、ANR
+	ANR全名Application Not Responding, 也就是"应用无响应". 当操作在一段时间内系统无法处理时, 系统层面会弹出上图那样的ANR对话框.
+	产生原因：
+	(1)5s内无法响应用户输入事件(例如键盘输入, 触摸屏幕等).
+	(2)BroadcastReceiver在10s内无法结束
+	(3)Service 20s内无法结束（低概率）
+36、RecyclerView和ListView的区别
+	RecyclerView可以完成ListView,GridView的效果，还可以完成瀑布流的效果。同时还可以设置列表的滚动方向（垂直或者水平）；
+	RecyclerView中view的复用不需要开发者自己写代码，系统已经帮封装完成了。
+	RecyclerView可以进行局部刷新。
+	RecyclerView提供了API来实现item的动画效果。
+	在性能上：
+	如果需要频繁的刷新数据，需要添加动画，则RecyclerView有较大的优势。
+	如果只是作为列表展示，则两者区别并不是很大。
+37、HTTP链接的特点
+HTTP连接最显著的特点是客户端发送的每次请求都需要服务器回送响应，在请求结束后，会主动释放连接。
+从建立连接到关闭连接的过程称为“一次连接”。
+ 
+38、TCP和UDP的区别
+	tcp是面向连接的，由于tcp连接需要三次握手，所以能够最低限度的降低风险，保证连接的可靠性。
+	udp 不是面向连接的，udp建立连接前不需要与对象建立连接，无论是发送还是接收，都没有发送确认信号。所以说udp是不可靠的。
+	由于udp不需要进行确认连接，使得UDP的开销更小，传输速率更高，所以实时行更好。
+39.数据库优化
+	在平时的开发中，其实我们每次给数据库中插入一条数据，数据库都会单独开启一个事务，我们插入多少条数据， 
+	就会对磁盘由多少次操作。这样在数据比较多的情况下，大大的降低了数据库的操作效率
+	批量插入数据时启动事务，批量插入，减少事务次数，从而提升性能
 
 
 
