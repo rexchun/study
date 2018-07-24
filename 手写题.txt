@@ -335,6 +335,13 @@ RxJava
 热修复
 数据结构
 
+okhttp优势
+
+glide优势
+Glide的Bitmap默认的格式是RGB_565，占用内存小
+Glide的缓存是根据ImageView的大小进行缓存的
+加载GIF
+可以解析任何的video文件成为一个静态图片
 
 
 
